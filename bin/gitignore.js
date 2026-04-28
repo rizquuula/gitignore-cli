@@ -7,8 +7,8 @@ const pkg = require('../package.json');
 const HELP = `gitignore - manage .gitignore entries
 
 Usage:
-  gitignore [options] add <pattern>    Add a pattern (idempotent)
-  gitignore [options] rm  <pattern>    Remove a pattern (exact match)
+  gitignore [options] add <pattern>...   Add one or more patterns (idempotent)
+  gitignore [options] rm  <pattern>...   Remove one or more patterns (exact match)
   gitignore -h, --help                 Show this help
   gitignore -v, --version              Show version
 
@@ -17,7 +17,7 @@ Options:
 
 Examples:
   gitignore add ./venv
-  gitignore add 'data/*.png'
+  gitignore add 'data/*.png' .env dist node_modules
   gitignore rm .env.example
   gitignore -f ./src/.gitignore add node_modules`;
 
@@ -33,31 +33,43 @@ function write(file, lines) {
   fs.writeFileSync(file, out);
 }
 
-function add(file, pattern) {
+function add(file, patterns) {
   const lines = read(file);
-  if (lines.some(l => l.trim() === pattern)) {
-    console.log(`already present: ${pattern}`);
-    return;
-  }
   if (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
-  lines.push(pattern);
+  const existing = new Set(lines.map(l => l.trim()));
+  for (const p of patterns) {
+    if (existing.has(p)) {
+      console.log(`already present: ${p}`);
+      continue;
+    }
+    lines.push(p);
+    existing.add(p);
+    console.log(`added: ${p}`);
+  }
   write(file, lines);
-  console.log(`added: ${pattern} -> ${file}`);
+  console.log(`-> ${file}`);
 }
 
-function rm(file, pattern) {
+function rm(file, patterns) {
   if (!fs.existsSync(file)) {
     console.error(`no gitignore at ${file}`);
     process.exit(1);
   }
-  const lines = read(file);
-  const next = lines.filter(l => l.trim() !== pattern);
-  if (next.length === lines.length) {
-    console.error(`not found: ${pattern}`);
-    process.exit(1);
+  let lines = read(file);
+  let missing = 0;
+  for (const p of patterns) {
+    const next = lines.filter(l => l.trim() !== p);
+    if (next.length === lines.length) {
+      console.error(`not found: ${p}`);
+      missing++;
+    } else {
+      console.log(`removed: ${p}`);
+    }
+    lines = next;
   }
-  write(file, next);
-  console.log(`removed: ${pattern} <- ${file}`);
+  write(file, lines);
+  console.log(`<- ${file}`);
+  if (missing) process.exit(1);
 }
 
 function parseArgs(argv) {
@@ -89,12 +101,12 @@ switch (cmd) {
     console.log(pkg.version);
     break;
   case 'add':
-    if (!rest[0]) { console.error('add: missing <pattern>'); process.exit(1); }
-    add(file, rest[0]);
+    if (!rest.length) { console.error('add: missing <pattern>'); process.exit(1); }
+    add(file, rest);
     break;
   case 'rm':
-    if (!rest[0]) { console.error('rm: missing <pattern>'); process.exit(1); }
-    rm(file, rest[0]);
+    if (!rest.length) { console.error('rm: missing <pattern>'); process.exit(1); }
+    rm(file, rest);
     break;
   default:
     console.error(`unknown command: ${cmd}`);

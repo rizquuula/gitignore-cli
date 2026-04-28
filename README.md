@@ -17,8 +17,8 @@ npx @lyralabs/gitignore-cli -v
 ## Usage
 
 ```
-gitignore [options] add <pattern>    Add a pattern (idempotent)
-gitignore [options] rm  <pattern>    Remove a pattern (exact match)
+gitignore [options] add <pattern>...   Add one or more patterns (idempotent)
+gitignore [options] rm  <pattern>...   Remove one or more patterns (exact match)
 gitignore -h, --help                 Show help
 gitignore -v, --version              Show version
 
@@ -30,8 +30,8 @@ Options:
 
 ```bash
 gitignore add ./venv
-gitignore add 'data/*.png'
-gitignore rm .env.example
+gitignore add 'data/*.png' .env dist node_modules
+gitignore rm .env.example old.txt
 
 # target a different file
 gitignore -f ./src/.gitignore add node_modules

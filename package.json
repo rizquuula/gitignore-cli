@@ -1,6 +1,6 @@
 {
   "name": "@lyralabs/gitignore-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Tiny CLI to add and remove entries in .gitignore",
   "bin": {
     "gitignore": "bin/gitignore.js",
