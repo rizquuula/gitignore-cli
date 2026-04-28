@@ -1,0 +1,20 @@
+{
+  "name": "@rizquuula/gitignore-cli",
+  "version": "0.2.0",
+  "description": "Tiny CLI to add and remove entries in .gitignore",
+  "bin": {
+    "gitignore": "bin/gitignore.js"
+  },
+  "files": [
+    "bin"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "keywords": [
+    "gitignore",
+    "cli",
+    "git"
+  ],
+  "license": "MIT"
+}
