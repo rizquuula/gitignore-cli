@@ -1,13 +1,23 @@
 {
   "name": "@lyralabs/gitignore-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tiny CLI to add and remove entries in .gitignore",
   "bin": {
-    "gitignore": "bin/gitignore.js"
+    "gitignore": "bin/gitignore.js",
+    "gitignore-cli": "bin/gitignore.js"
   },
   "files": [
-    "bin"
+    "bin",
+    "README.md"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizquuula/gitignore-cli.git"
+  },
+  "homepage": "https://github.com/rizquuula/gitignore-cli#readme",
+  "bugs": {
+    "url": "https://github.com/rizquuula/gitignore-cli/issues"
+  },
   "engines": {
     "node": ">=14"
   },
